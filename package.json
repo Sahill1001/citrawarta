@@ -1,0 +1,23 @@
+{
+  "name": "citrawarta",
+  "version": "1.0.0",
+  "description": "Citrawārtā is a dynamic platform blending the best of both YouTube and Twitter. It offers the power of video-sharing and microblogging in one seamless experience, allowing users to express themselves through rich media content and quick updates. Whether it's sharing videos, posting short thoughts, or engaging with trending topics, Citrawārtā provides a space where creativity and conversation thrive. The name itself reflects the essence of modern, fast-paced communication combined with visual storytelling.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon src/index.js"
+  },
+  "keywords": [
+    "YouTube",
+    "Twitter",
+    "Citrawārtā",
+    "video-sharing",
+    "microblogging"
+  ],
+  "author": "Sahilkumar Prasad",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^5.0.0"
+  }
+}
