@@ -1,7 +1,16 @@
+import "dotenv/config";
+
 import express from "express";
+import { dataBase } from "./db/database.js";
+
+dataBase();
 const app = express();
-const port = 3000;
 
-app.get("/", (req, res) => res.send("Hello Citrawārtā"));
-
-app.listen(port, () => console.log(`Citrawārtā is listening on port ${port}`));
+app.get("/", (req, res) => {
+  res.send("Hello Citrawarta");
+});
+app.listen(process.env.PORT, () => {
+  console.log(
+    `The app is litening on port ${process.env.PORT} and this is the link http://127.0.0.1:8000/`
+  );
+});
