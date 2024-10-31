@@ -6,7 +6,7 @@ export const dataBase = async () => {
     const connectionInstance = await connect(
       `${process.env.MONGODB_URI}/${DB_NAME}`
     );
-    console.log("Connection Stablished !!", connectionInstance.connection.host);
+    console.log("Connection Stablished !! DB HOST:", connectionInstance.connection.host);
   } catch (error) {
     console.error("Unable to connect to mongodb", error);
     process.exit(1);

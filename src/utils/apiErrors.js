@@ -1,4 +1,4 @@
-class ApiError extends Element {
+class ApiError extends Error {
   constructor(
     statusCode,
     message = "somthing went wrong",
