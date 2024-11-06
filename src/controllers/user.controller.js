@@ -20,29 +20,38 @@ const userRegister = asyncHandler(async (req, res) => {
     throw new ApiError(409, "The user already exist!");
   }
 
-  const avtarLocalPath = req.files?.avtar[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  const avtarLocalPath = req.files?.avtar?.[0]?.path;
+  const coverImageLocalPath =
+    req.files?.coverImage &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+      ? req.files.coverImage[0].path
+      : null;
 
   if (!avtarLocalPath) {
-    throw new ApiError(400, "Avtar is required!");
+    throw new ApiError(400, "Avatar is required!");
   }
 
+  // Upload avatar
   const avtar = await uploadOnCloudinary(avtarLocalPath);
-  const coverImage = coverImageLocalPath
-    ? await uploadOnCloudinary(coverImageLocalPath)
-    : null;
-
   if (!avtar) {
-    throw new ApiError(500, "Unabled to upload avtar!");
+    throw new ApiError(500, "Unable to upload avatar!");
   }
 
+  // Upload cover image if provided
+  let coverImage;
+  if (coverImageLocalPath) {
+    coverImage = await uploadOnCloudinary(coverImageLocalPath);
+  }
+
+  // Create the user
   const user = await User.create({
     userName: userName.toLowerCase(),
     email: email.toLowerCase(),
     fullName,
     password,
     avtar: avtar.secure_url,
-    coverImage: coverImage.secure_url || "",
+    coverImage: coverImage?.secure_url || "", // Fallback to an empty string if coverImage is not uploaded
   });
 
   const createdUser = await User.findById(user._id).select(
