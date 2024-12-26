@@ -323,20 +323,57 @@ const updateCoverImage = asyncHandler(async (req, res) => {
 const getUserChannelProfile = asyncHandler(async (req, res) => {
   const { userName } = req.params;
 
-  await User.aggregate([
+  const channel = await User.aggregate([
     {
-      $match:{
-        userName:userName?.toLowerCase()
-      }
+      $match: {
+        userName: userName?.toLowerCase(),
+      },
     },
     {
-      $lookup:{
-        from:"subscriptions",
-        localField:"_id",
-        foreignField:"channel"
-      }
-    }
-  ])
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribedTo",
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscribers",
+      },
+    },
+    {
+      $addFields: {
+        totalSubscribers: { $size: "$subscribers" },
+        totalSubscriptions: { $size: "$subscribedTo" },
+        isSubscribed: {
+          $in: [req.user?._id, "$subscribers.subscriber"],
+        },
+      },
+    },
+    {
+      $project: {
+        password: 0,
+        refreshToken: 0,
+        watchHistory: 0,
+        updatedAt: 0,
+        createdAt: 0,
+      },
+    },
+  ]);
+
+  if (!channel?.length) {
+    throw new ApiError(404, "Channel not found!");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, channel[0], "Channel Profile fetched successfully!")
+    );
 });
 
 export {
