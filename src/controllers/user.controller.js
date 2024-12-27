@@ -8,6 +8,7 @@ import {
 } from "../utils/cloudinary.js";
 
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const userRegister = asyncHandler(async (req, res) => {
   const { userName, email, fullName, password } = req.body;
@@ -139,7 +140,7 @@ const userLogin = asyncHandler(async (req, res) => {
 
 const userLogout = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(req.user._id, {
-    $unset: { refreshToken: "" },
+    $unset: { refreshToken: 1 },
   });
 
   const options = {
@@ -376,6 +377,60 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     );
 });
 
+const getWatchHistory = asyncHandler(async (req, res) => {
+  const user = await User.aggregate([
+    {
+      $match: {
+        _id: req.user._id,
+      },
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "watchHistory",
+        foreignField: "_id",
+        as: "watchHistory",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    fullName: 1,
+                    userName: 1,
+                    avatar: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              owner: {
+                $first: "$owner",
+              },
+            },
+          },
+        ],
+      },
+    },
+  ]);
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        user[0].watchHistory,
+        "Watch history fetched suceessfully"
+      )
+    );
+});
+
 export {
   userRegister,
   userLogin,
@@ -387,4 +442,5 @@ export {
   updateAvatar,
   updateCoverImage,
   getUserChannelProfile,
+  getWatchHistory,
 };
