@@ -25,13 +25,27 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 };
 
-const deleteFromCloudinary = async (publicId) => {
+const deleteFromCloudinary = async (publicId, resourceType = "image") => {
   try {
-    if (!publicId) return null;
-    await cloudinary.uploader.destroy(publicId);
-    console.log("Old file is deleted successfully");
+    if (!publicId) {
+      console.error("Error: Missing publicId");
+      return null;
+    }
+
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType, // Ensure correct resource type
+    });
+
+    if (result.result === "ok") {
+      console.log(`✅ File deleted successfully: ${publicId}`);
+      return result;
+    } else {
+      console.warn(`⚠️ File not found or not deleted: ${publicId}`, result);
+      return result;
+    }
   } catch (error) {
-    console.error("some error occure during deleting", error);
+    console.error("❌ Error deleting from Cloudinary:", error);
+    throw error; // Propagate error for better error handling
   }
 };
 

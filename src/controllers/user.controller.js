@@ -2,13 +2,13 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiErrors.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { User } from "../models/user.model.js";
+import { getPublicIdFromUrl } from "../utils/getPublicIdFromUrl.js";
 import {
   uploadOnCloudinary,
   deleteFromCloudinary,
 } from "../utils/cloudinary.js";
 
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
 
 const userRegister = asyncHandler(async (req, res) => {
   const { userName, email, fullName, password } = req.body;
@@ -256,7 +256,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 });
 
 const updateAvatar = asyncHandler(async (req, res) => {
-  const avatarPublicId = req.user.avatar;
+  const avatarPublicId = getPublicIdFromUrl(req.user.avatar);
   const avatarLocalPath = req.file?.path;
 
   if (!avatarLocalPath) {
@@ -289,7 +289,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
 });
 
 const updateCoverImage = asyncHandler(async (req, res) => {
-  const coverImagePublicId = req.user?.coverImage;
+  const coverImagePublicId = getPublicIdFromUrl(req.user?.coverImage);
   const coverImageLocalPath = req.file?.path;
 
   if (!coverImageLocalPath) {

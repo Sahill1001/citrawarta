@@ -7,7 +7,7 @@ const videoSchema = new Schema(
       type: String, //Cloudinary url
       required: true,
     },
-    thumbNail: {
+    thumbnail: {
       type: String, //Cloudinary url
       required: true,
     },
@@ -25,7 +25,6 @@ const videoSchema = new Schema(
     },
     views: {
       type: Number,
-      required: true,
       default: 0,
     },
     isPublished: {
@@ -36,7 +35,7 @@ const videoSchema = new Schema(
       ref: "User",
     },
   },
-  { timeseries: true }
+  { timestamps: true }
 );
 
 videoSchema.plugin(mongooseAggregatePaginate);
