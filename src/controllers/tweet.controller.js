@@ -1,7 +1,7 @@
-import mongoose, { isValidObjectId } from "mongoose";
+import { isValidObjectId } from "mongoose";
 import { Tweet } from "../models/tweet.model.js";
-import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiError } from "../utils/apiErrors.js";
+import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const createTweet = asyncHandler(async (req, res) => {
@@ -71,7 +71,7 @@ const deleteTweet = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Tweet not found");
     }
 
-    return res.status(200).json(new ApiResponse(200, tweet, "Tweet deleted"));
+    return res.status(200).json(new ApiResponse(200, [], "Tweet deleted"));
 });
 
 export { createTweet, getUserTweets, updateTweet, deleteTweet };
