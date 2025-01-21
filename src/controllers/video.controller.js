@@ -1,9 +1,10 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import { Video } from "../models/video.model.js";
 import { ApiError } from "../utils/apiErrors.js";
-import { ApiResponse } from "../utils/apiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { getPublicIdFromUrl } from "../utils/getPublicIdFromUrl.js";
+
 import {
   deleteFromCloudinary,
   uploadOnCloudinary,
