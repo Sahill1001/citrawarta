@@ -11,8 +11,7 @@ const playlistSchema = new Schema(
     },
     videos: [
       {
-        type: Schema.Types,
-        Object,
+        type: Schema.Types.ObjectId,
         ref: "Video",
       },
     ],
@@ -24,4 +23,4 @@ const playlistSchema = new Schema(
   { timestamps: true }
 );
 
-const Playlist = mongoose.model("Playlist", playlistSchema);
+export const Playlist = mongoose.model("Playlist", playlistSchema);
